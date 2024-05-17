@@ -47,22 +47,23 @@
 
             <div class="row g-4">
 
-            <?php
+                <?php
 $schoolAdministration = DB::table('about_school_administration')->get();
 ?>
-@foreach($schoolAdministration as $row)
-    <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="team-item bg-light">
-            <div class="overflow-hidden">
-                <img class="img-fluid" src="/content/img/img-about/administration/{{ $row->img }}" alt="{{ $row->name }}" style="width: auto;">
-            </div>
-            <div class="text-center p-4">
-                <h5 class="mb-0">{{ $row->name }}</h5>
-                <small>{{ $row->post }}</small>
-            </div>
-        </div>
-    </div>
-@endforeach
+                @foreach($schoolAdministration as $row)
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="team-item bg-light">
+                        <div class="overflow-hidden">
+                            <img class="img-fluid" src="/content/img/img-about/administration/{{ $row->img }}"
+                                alt="{{ $row->name }}" style="width: auto;">
+                        </div>
+                        <div class="text-center p-4">
+                            <h5 class="mb-0">{{ $row->name }}</h5>
+                            <small>{!! $row->post !!}</small>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
 
 
 

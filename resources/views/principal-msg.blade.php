@@ -2,24 +2,12 @@
 <html lang="en">
 
 <head>
-    <?php include 'database_connection.php'; ?>
+
 
     <title>Principal's Message</title>
 
-    <?php 
-
-    
-$query = "SELECT * FROM principal_msg";
-$statement = $connect->prepare($query);
-$statement->execute();
-$rows = $statement->fetchAll();
-
-if (count($rows) === 0) {
-    header("Location: https://princeofwales.edu.lk/404.php");
-}
-
-foreach ($rows as $row) {
-}
+    <?php
+    $page = '';
 ?>
 
     <!-- Primary Meta Tags -->
@@ -54,22 +42,30 @@ foreach ($rows as $row) {
 
 
         <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                    <h6 class="section-title bg-white text-start text-primary pe-3"></h6>
-                    <h2 class="mb-4">Message from the Principal</h2>
-                    <h6 class="bg-white text-start text-primary "><?php echo $row["name"]; ?></h6>
-                    <p class="mb-4"><?php echo $row["msg"]; ?>
-                    </p>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="position-relative ">
-                        <img class="img-fluid w-100 h-100" src="content/img/img-home/<?php echo $row["img"]; ?>"
-                            alt="principal-pwc" style="object-fit: cover; border-radius: 8px;">
-                    </div>
-                </div>
+    <div class="row g-5">
+        <?php
+        $principalMessage = DB::select("SELECT * FROM principal_msg ORDER BY id DESC LIMIT 1");
+        ?>
+        <?php if($principalMessage): ?>
+        <?php foreach($principalMessage as $row): ?>
+        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
+            <h6 class="section-title bg-white text-start text-primary pe-3"></h6>
+            <h2 class="mb-4">Message from the Principal</h2>
+            <h6 class="bg-white text-start text-primary ">{{ $row->name }}</h6>
+            <p class="mb-4">{!! $row->msg !!}</p>
+        </div>
+        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="position-relative ">
+                <img class="img-fluid w-100 h-100"
+                    src="<?php echo e(asset('content/img/img-home/' . $row->img)); ?>"
+                    alt="principal-pwc" style="object-fit: cover; border-radius: 8px;">
             </div>
         </div>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+
     </header>
 
     <br>

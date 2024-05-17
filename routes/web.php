@@ -147,3 +147,31 @@ Route::get('/cmbu', function () {
 Route::get('/principal-message', function () {
     return view('principal-msg');
 });
+
+Route::get('/forms/apply-al', function () {
+    return view('forms.apply-al.index');
+});
+
+
+Route::get('/forms/apply-al/science', function () {
+    return view('forms.apply-al.science');
+});
+
+
+Route::get('/forms/apply-al/commerce', function () {
+    return view('forms.apply-al.commerce');
+});
+
+
+Route::get('/forms/apply-al/tech', function () {
+    return view('forms.apply-al.tech');
+});
+
+
+Route::get('/forms/apply-al/art', function () {
+    return view('forms.apply-al.art');
+});
+
+Route::get('/forms/students-info', function () {
+    return view('forms.students-info.form');
+});

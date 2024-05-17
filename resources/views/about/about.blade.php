@@ -519,7 +519,7 @@ if ($currentDate >= 1 && $currentDate <= 5) {
                     </div>
                     <div class="text-center p-4">
                         <h5 class="mb-0">{{ $administration->name }}</h5>
-                        <small>{{ $administration->post }}</small>
+                        <small>{!! $administration->post !!}</small>
                     </div>
                 </div>
             </div>

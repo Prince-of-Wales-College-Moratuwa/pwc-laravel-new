@@ -109,7 +109,7 @@
                             </a>
                             <div class="desc">
                                 <h4><a href="/blog/{{ $row->slug }}">{{ $row->title }}</a></h4>
-                                <p>{{ htmlspecialchars(strip_tags($row->excerpt)) }}......</p>
+                                <p>{!!$row->excerpt!!}......</p>
                             </div>
                         </article>
                     </div>
