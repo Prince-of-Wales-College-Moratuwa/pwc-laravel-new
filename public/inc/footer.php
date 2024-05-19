@@ -1,6 +1,6 @@
 <style>
     .footer {
-    background-image: url('/patterntp.webp');
+    background-image: url('../content/img/patterntp.webp');
     background-size: cover;
     background-position: center;
     padding-top: 100px;

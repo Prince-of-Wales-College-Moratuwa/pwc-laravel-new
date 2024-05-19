@@ -12,7 +12,7 @@ Route::fallback(function () {
 
 // Handle 404 error
 Route::fallback(function () {
-    return view('errors.404');
+    return response()->view('errors.404', [], 404);
 });
 
 
@@ -43,7 +43,19 @@ Route::get('/events', function () {
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('event-details');
 
 
+Route::get('/principal-message', function () {
+    return view('principal-msg');
+});
 
+
+
+Route::get('/about', function () {
+    return view('about.about');
+});
+
+Route::get('/about/school-administration', function () {
+    return view('about.school-administration');
+});
 
 Route::get('/about/school-infrastructure', function () {
     return view('about.school-infrastructure');
@@ -62,6 +74,8 @@ Route::get('/about/lassana-wales', function () {
 });
 
 
+
+
 Route::get('/clubs', function () {
     return view('clubs.clubs');
 });
@@ -74,6 +88,17 @@ Route::get('/sports', function () {
     return view('sports.sports');
 });
 
+Route::get('/battle-of-the-golds', function () {
+    return view('sports.big-match');
+});
+Route::get('/big-match', function () {
+    return view('sports.big-match');
+});
+
+Route::get('/cmbu', function () {
+    return view('clubs.cmbu');
+});
+
 Route::get('/history', function () {
     return view('history.history');
 });
@@ -82,22 +107,18 @@ Route::get('/history/former-principals', function () {
     return view('history.former-principals');
 });
 
-Route::get('/about', function () {
-    return view('about.about');
-});
 
-Route::get('/about/school-administration', function () {
-    return view('about.school-administration');
-});
+
+
 
 Route::get('/contact', function () {
     return view('contact');
 });
 
-Route::get('/search', function () {
-    return view('search');
-});
 
+Route::match(['get', 'post'], '/search', function() {
+    return view('search');
+})->name('search');
 
 Route::get('/team', function () {
     return view('team');
@@ -132,21 +153,8 @@ Route::get('/sitemap', function () {
     return view('sitemap');
 });
 
-Route::get('/battle-of-the-golds', function () {
-    return view('sports.big-match');
-});
 
-Route::get('/big-match', function () {
-    return view('sports.big-match');
-});
 
-Route::get('/cmbu', function () {
-    return view('clubs.cmbu');
-});
-
-Route::get('/principal-message', function () {
-    return view('principal-msg');
-});
 
 Route::get('/forms/apply-al', function () {
     return view('forms.apply-al.index');
@@ -175,3 +183,4 @@ Route::get('/forms/apply-al/art', function () {
 Route::get('/forms/students-info', function () {
     return view('forms.students-info.form');
 });
+

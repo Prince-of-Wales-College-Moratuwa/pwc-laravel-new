@@ -28,15 +28,15 @@
     @include('includes.header')
 
     <br>
-    <!-- Additional CSS or JavaScript -->
+
 </head>
 <body>
     @if ($post->schoolPride == 'ON')
-        <!-- Confetti code -->
+
         <div class="confetti-container"></div>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
         <script>
-            var end = Date.now() + (1 * 1000);
+            var end = Date.now() + (1 * 2000);
             var colors = ['#800080', '#ffd700', '#800000'];
             (function frame() {
                 confetti({

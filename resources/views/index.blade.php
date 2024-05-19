@@ -240,7 +240,7 @@ $age = date("Y") - $birthYear;
                     <div class="desc">
                         <h2 class="h1" style="font-size: 24px;"><a href="blog/{{ $row->slug }}">{{ $row->title }}</a>
                         </h2>
-                        <p>{{ htmlspecialchars(strip_tags($row->excerpt)) }}......</p>
+                        <p>{!!$row->excerpt!!}......</p>
                     </div>
                 </article>
             </div>

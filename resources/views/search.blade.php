@@ -1,13 +1,10 @@
-<?php
-    $page = 'search';
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-@include('includes.header')
+    <?php $page = ''; ?>
 
+    @include('includes.header')
 
     <title>Search</title>
 
@@ -23,17 +20,23 @@
             border-radius: 0 25px 25px 0;
             color: white;
         }
-    </style>
 
+        /* Ensure images fit within their container */
+        .blog-img img, .course-item img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8 col-lg-6">
                 <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                     <h6 class="section-title bg-white text-center text-primary px-3">Type Here To Search</h6>
-                    <form method="post" action="">
+                    <form method="POST" action="{{ route('search') }}">
+                        @csrf
                         <div class="input-group mb-3">
                             <input type="text" class="form-control search-box" placeholder="Search" aria-label="Search" aria-describedby="search-icon" name="search">
                             <div class="input-group-append">
@@ -48,125 +51,97 @@
 
     <br>
 
-    <div class="colorlib-blog colorlib-light-grey">
+    @php
+        use App\Models\PwcDbNews;
+        use App\Models\PwcDbEvents;
+        use Illuminate\Http\Request;
+
+        if (request()->isMethod('post') && request()->has('search')) {
+            $keyword = request('search');
+
+            $newsResults = PwcDbNews::where('title', 'like', '%' . $keyword . '%')
+                ->orWhere('excerpt', 'like', '%' . $keyword . '%')
+                ->orWhere('category', 'like', '%' . $keyword . '%')
+                ->orderBy('date', 'desc')
+                ->get();
+
+            $eventResults = PwcDbEvents::where('title', 'like', '%' . $keyword . '%')
+                ->orWhere('about', 'like', '%' . $keyword . '%')
+                ->orWhere('date', 'like', '%' . $keyword . '%')
+                ->orWhere('location', 'like', '%' . $keyword . '%')
+                ->orWhere('organizer_name', 'like', '%' . $keyword . '%')
+                ->orderBy('date', 'desc')
+                ->get();
+        }
+    @endphp
+
+
+    @if(isset($newsResults) || isset($eventResults))
+    <div class="colorlib-light-grey">
         <div class="container">
+    <h6 class="section-title bg-white text-start text-primary px-3">Results for "{{ $keyword }}"</h6><br>
 
-            <div class="row">
-                <?php
-                if (isset($_POST['search'])) {
-                    $keyword = $_POST['search'];
+            {{-- News Container --}}
+            @if(isset($newsResults) && count($newsResults) > 0)
+                <div class="colorlib-blog">
+                    <h6 class="section-title bg-white text-start text-primary px-3">In Blog</h6>
+                    <div class="row">
+                        {{-- Display Blog Results --}}
+                        @foreach($newsResults as $news)
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <article class="article-entry">
+                                    <a href="{{ url('blog/' . $news->slug) }}" class="blog-img">
+                                        <img src="{{ asset('content/img/img-blog/' . $news->photo) }}" alt="{{ $news->photo }}">
+                                        <p class="meta"><span class="day">{{ $news->date }}</span> │ <span>{{ $news->category }}</span></p>
+                                    </a>
+                                    <div class="desc">
+                                        <h4><a href="{{ url('blog/' . $news->slug) }}">{{ $news->title }}</a></h4>
+                                        <p>{!! $news->excerpt !!}...</p>
+                                    </div>
+                                </article>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
-                    $sql = "SELECT * FROM pwc_db_news
-                            WHERE title LIKE :keyword
-                            OR excerpt LIKE :keyword
-                            OR category LIKE :keyword ORDER BY date DESC";
+            {{-- Events Container --}}
+            @if(isset($eventResults) && count($eventResults) > 0)
+                <div class="colorlib-events">
+                    <h6 class="section-title bg-white text-start text-primary px-3">In Events</h6>
+                    <div class="row">
+                        {{-- Display Event Results --}}
+                        @foreach($eventResults as $event)
+                            <div class="col-md-6 col-lg-4 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="course-item bg-light">
+                                    <div class="position-relative overflow-hidden">
+                                        <img class="img-fluid" src="{{ asset('content/img/img-events/' . $event->img) }}" alt="{{ $event->img }}">
+                                    </div>
+                                    <div class="text-center p-4 pb-0">
+                                        <h4 class="mb-4">{{ $event->title }}</h4>
+                                    </div>
+                                    <div class="w-100 d-flex justify-content-center mb-4">
+                                        <a href="{{ url('events/' . $event->slug) }}" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;">Read More</a>
+                                    </div>
+                                    <div class="d-flex border-top">
+                                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar text-primary me-2"></i>{{ $event->date }}</small>
+                                        <small class="flex-fill text-center py-2"><i class="fa fa-map-marker text-primary me-2"></i>{{ $event->location }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
-                    $stmt = $connect->prepare($sql);
-                    $stmt->bindValue(':keyword', '%' . $keyword . '%', PDO::PARAM_STR);
-                    $stmt->execute();
-
-                    // Get the number of rows returned by the query
-                    $row_count = $stmt->rowCount();
-
-                    if ($row_count > 0) {
-                        echo '<h6 class="section-title bg-white text-start text-primary">"';
-                        echo $keyword;
-                        echo '" IN BLOG</h6>';
-                    } else {
-                        echo '<h6 class="section-title bg-white text-start text-primary">"';
-                        echo $keyword;
-                        echo '" IN BLOG</h6>';
-                    }
-
-                    if ($row_count > 0) {
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            // Generate the HTML output for each record
-                            echo '<br><br><div class="col-md-4 animate-box">
-                                    <article class="article-entry">
-                                        <a href="blog/' . $row["slug"] . '" class="blog-img">
-                                            <img src="content/img/img-blog/' . $row["photo"] . '" alt="' . $row["photo"] . '"><br><br>
-                                            <p class="meta"><span class="day">' . $row["date"] . '</span> │ <span></span>
-                                                <span>' . $row["category"] . '</span></p>
-                                        </a>
-                                        <div class="desc">
-                                            <h4><a href="blog/' . $row["slug"] . '">' . $row["title"] . '</a></h4>
-                                            <p>' . $row["excerpt"] . '...</p>
-                                        </div>
-                                    </article>
-                                </div>';
-                        }
-                    } else {
-                        echo "No results found.";
-                    }
-                }
-                ?>
-            </div>
+            {{-- If no news or events found --}}
+            @if(!isset($newsResults) && !isset($eventResults))
+                <p>No Results found.</p>
+            @endif
         </div>
     </div>
+@endif
 
-    <br>
-
-    <div class="colorlib-blog colorlib-light-grey">
-        <div class="container">
-            <div class="row">
-                <?php
-                if (isset($_POST['search'])) {
-                    $keyword = $_POST['search'];
-
-                    $sql = "SELECT * FROM pwc_db_events
-                            WHERE title LIKE :keyword
-                            OR about LIKE :keyword
-                            OR date LIKE :keyword
-                            OR location LIKE :keyword
-                            OR organizer_name LIKE :keyword ORDER BY date DESC";
-
-                    $stmt = $connect->prepare($sql);
-                    $stmt->bindValue(':keyword', '%' . $keyword . '%', PDO::PARAM_STR);
-                    $stmt->execute();
-
-                    // Get the number of rows returned by the query
-                    $row_count = $stmt->rowCount();
-
-                    if ($row_count > 0) {
-                        echo '<h6 class="section-title bg-white text-start text-primary">"';
-                        echo $keyword;
-                        echo '" IN EVENTS</h6>';
-                    } else {
-                        echo '<h6 class="section-title bg-white text-start text-primary">"';
-                        echo $keyword;
-                        echo '" IN EVENTS</h6>';
-                    }
-
-                    if ($row_count > 0) {
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            // Generate the HTML output for each record
-                            echo '<br><br><div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">';
-                            echo '<div class="course-item bg-light">';
-                            echo '<div class="position-relative overflow-hidden">';
-                            echo '<img class="img-fluid" src="../content/img/img-events/' . $row["img"] . '" alt="' . $row["img"] . '" style="width: auto;">';
-                            echo '</div>';
-                            echo '<div class="text-center p-4 pb-0">';
-                            echo '<h4 class="mb-4">' . $row["title"] . '</h4>';
-                            echo '</div>';
-                            echo '<div class="w-100 d-flex justify-content-center bottom-0 start-0 mb-4">';
-                            echo '<a href="events/' . $row["slug"] . '" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px 30 30 30px;">Read More</a>';
-                            echo '</div>';
-                            echo '<div class="d-flex border-top">';
-                            echo '<small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>' . $row["organizer_name"] . '</small>';
-                            echo '<small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar text-primary me-2"></i>' . $row["date"] . '</small>';
-                            echo '<small class="flex-fill text-center py-2"><i class="fa fa-map-marker text-primary me-2"></i>' . $row["location"] . '</small>';
-                            echo '</div>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                    } else {
-                        echo "No results found.";
-                    }
-                }
-                ?>
-            </div>
-        </div>
-    </div>
 
     @include('includes.footer')
 </body>

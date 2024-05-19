@@ -32,7 +32,7 @@
     <meta property="twitter:image" content="/content/img/golden-captures/golden-cap-cvr.webp" />
 
     <!-- Include header.php -->
-    <?php include '../header.php' ?>
+    <?php include '../../inc/header.php' ?>
 
 
     <style>
@@ -85,19 +85,7 @@
 
     <?php
 
-    // Database connection details
-    $host = 'localhost';
-    $dbname = 'pwc_db';
-    $username = 'root';
-    $password = '';
-
-    // Attempt to connect to the database
-    try {
-        $connect = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
-    }
+    include '../../database_connection.php';
 
     // Fetching data using SQL query
     $sql = "SELECT * FROM golden_captures ORDER BY date DESC";
@@ -137,7 +125,7 @@
 
 
     <!-- Include footer.php -->
-    <?php include '../footer.php' ?>
+    <?php include '../../inc/footer.php' ?>
 
 
 </body>
