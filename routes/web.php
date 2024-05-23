@@ -5,17 +5,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 Route::redirect('/battle-of-the-golds.php', '/battle-of-the-golds');
 
-
-Route::fallback(function () {
-    return response()->view('errors.403', [], 403);
-});
-
-// Handle 404 error
+// Custom error pages
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
-
-
+Route::get('/400', function () {
+    return response()->view('errors.400', [], 400);
+});
+Route::get('/401', function () {
+    return response()->view('errors.401', [], 401);
+});
+Route::get('/403', function () {
+    return response()->view('errors.403', [], 403);
+});
+Route::get('/500', function () {
+    return response()->view('errors.500', [], 500);
+});
 Route::get('/offline', function () {
     return view('errors.offline');
 });
